@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hyperframes Composition</title>
+  <title>Claude Opus 4.8 Launch Reveal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: dark;
-      font-family: Inter, sans-serif;
-      background: transparent;
+      background: #070709;
       color: #f6f1e8;
+      font-family: 'DM Sans', sans-serif;
       font-kerning: normal;
       text-rendering: geometricPrecision;
       -webkit-font-smoothing: antialiased;
@@ -18,127 +21,354 @@
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
       height: 100%;
-      margin: 0;
       overflow: hidden;
-      background: #0b0b0d;
+      background: #070709;
     }
 
+    /* Video frame root */
     #stage {
       position: relative;
       width: 1920px;
       height: 1080px;
       overflow: hidden;
-      background:
-        linear-gradient(180deg, rgb(255 255 255 / 0.04), transparent 38%),
-        radial-gradient(ellipse at 50% 52%, rgb(255 255 255 / 0.07), transparent 48%),
-        #0b0b0d;
+      background: #070709;
     }
 
-    .preview-pending-scene {
+    /* Persistent Luxury Background */
+    .master-bg {
       position: absolute;
       inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding-left: 232px;
+      z-index: 1;
       overflow: hidden;
-      transform: translate3d(0, 0, 0);
-      backface-visibility: hidden;
     }
 
-    .preview-pending-scene::before {
+    /* Img back plate */
+    .master-plate {
+      position: absolute;
+      inset: -50px; /* offset for drift zoom */
+      width: calc(100% + 100px);
+      height: calc(100% + 100px);
+      object-fit: cover;
+      opacity: 0.35;
+      mix-blend-mode: lighten;
+    }
+
+    /* Overlay gradients for deep luxurious atmosphere */
+    .bg-vignette {
       position: absolute;
       inset: 0;
+      background: 
+        radial-gradient(circle at 50% 50%, transparent 20%, #070709 95%),
+        radial-gradient(circle at 10% 10%, rgba(239, 131, 84, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 90% 90%, rgba(239, 131, 84, 0.05) 0%, transparent 40%);
       pointer-events: none;
-      content: "";
-      background:
-        linear-gradient(90deg, rgb(11 11 13 / 0.88) 0%, rgb(11 11 13 / 0.72) 28%, transparent 62%),
-        linear-gradient(90deg, rgb(255 255 255 / 0.03), transparent 34%),
-        linear-gradient(180deg, transparent 58%, rgb(0 0 0 / 0.34));
     }
 
-    .preview-pending-grid {
+    /* Technical grid pattern overlapping gently */
+    .bg-tech-grid {
       position: absolute;
       inset: 0;
-      pointer-events: none;
-      opacity: 0.28;
-      background-image:
-        linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px),
-        linear-gradient(180deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
-      background-size: 72px 72px;
-      mask-image: radial-gradient(ellipse at center, black 0%, transparent 72%);
+      opacity: 0.12;
+      background-image: 
+        linear-gradient(90deg, rgba(239, 131, 84, 0.15) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(239, 131, 84, 0.15) 1px, transparent 1px);
+      background-size: 80px 80px;
+      background-position: center center;
+      mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
     }
 
-    .preview-pending-content {
+    /* Ambient particle container */
+    .ambient-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(239, 131, 84, 0.12) 0%, transparent 70%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    /* General scene clips container */
+    .scenes-container {
       position: relative;
+      width: 100%;
+      height: 100%;
       z-index: 2;
-      width: 560px;
+    }
+
+    /* Clip wrapper */
+    .clip {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      text-shadow: 0 20px 54px rgb(0 0 0 / 0.56);
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
       will-change: transform, opacity;
     }
 
-    .preview-pending-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: rgb(246 241 232 / 0.64);
-      font-size: 15px;
+    /* Mask container for reveals */
+    .mask-revealer {
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: bottom;
+    }
+
+    /* Typography families */
+    .tech-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Highlight style */
+    .highlight {
+      color: #EF8354;
+      text-shadow: 0 0 40px rgba(239, 131, 84, 0.35);
+    }
+
+    /* Pre-designed structured styles */
+    
+    /* Scene 1: The Opener */
+    .scene1-badge {
+      font-size: 18px;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      line-height: 1;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(246, 241, 232, 0.5);
+      border: 1px solid rgba(239, 131, 84, 0.2);
+      padding: 8px 18px;
+      border-radius: 40px;
+      background: rgba(239, 131, 84, 0.04);
+      margin-bottom: 24px;
+    }
+
+    .scene1-title {
+      font-size: 80px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      text-align: center;
+      max-width: 1200px;
+    }
+
+    /* Scene 2: The Core Reveal */
+    .scene2-title {
+      font-size: 110px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+      text-align: center;
+    }
+
+    .scene2-sub {
+      font-size: 30px;
+      color: rgba(246, 241, 232, 0.6);
+      margin-top: 20px;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
     }
 
-    .preview-pending-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #d6a15c;
-      box-shadow: 0 0 24px rgb(214 161 92 / 0.7);
+    /* Scene 3: Tech specifications / Power grid */
+    .scene3-title {
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 50px;
+      text-align: center;
     }
 
-    .preview-pending-title {
-      max-width: 560px;
-      margin-top: 20px;
-      font-size: 54px;
-      font-weight: 760;
-      letter-spacing: 0;
-      line-height: 0.98;
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 340px);
+      gap: 40px;
+      justify-content: center;
     }
 
-    .preview-pending-subtitle {
-      max-width: 430px;
-      margin-top: 14px;
-      color: rgb(246 241 232 / 0.58);
-      font-size: 20px;
-      font-weight: 500;
-      letter-spacing: 0;
-      line-height: 1.35;
-    }
-
-    .preview-pending-progress {
-      width: 360px;
-      height: 2px;
-      margin-top: 32px;
+    .metric-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 40px 30px;
+      border-radius: 16px;
+      text-align: left;
+      position: relative;
       overflow: hidden;
-      background: rgb(246 241 232 / 0.12);
     }
 
-    .preview-pending-progress span {
-      display: block;
-      width: 100%;
+    .metric-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
       height: 100%;
-      transform-origin: left center;
-      background: linear-gradient(90deg, #9c7441, #f1d4a8);
+      background: #EF8354;
+      opacity: 0.7;
+    }
+
+    .metric-value {
+      font-size: 56px;
+      font-weight: 700;
+      color: #EF8354;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .metric-label {
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(246, 241, 232, 0.9);
+      margin-bottom: 6px;
+    }
+
+    .metric-desc {
+      font-size: 14px;
+      color: rgba(246, 241, 232, 0.45);
+      line-height: 1.4;
+    }
+
+    /* Scene 4: Code block and processor */
+    .spec-container {
+      display: flex;
+      align-items: center;
+      gap: 80px;
+      width: 1300px;
+      justify-content: space-between;
+    }
+
+    .code-terminal {
+      width: 680px;
+      background: #0c0d12;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+      font-family: monospace;
+      font-size: 16px;
+      text-align: left;
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-btn.r { background: #fc5c57; }
+    .dot-btn.y { background: #fdbd2e; }
+    .dot-btn.g { background: #33c748; }
+
+    .terminal-title {
+      font-size: 13px;
+      color: rgba(246, 241, 232, 0.4);
+      margin-left: 10px;
+    }
+
+    .terminal-body {
+      padding: 24px;
+      line-height: 1.6;
+      color: #a9b2c3;
+    }
+
+    .code-keyword { color: #f07178; }
+    .code-class { color: #ffcb6b; }
+    .code-string { color: #c3e88d; }
+    .code-func { color: #82aaff; }
+
+    .processor-module {
+      width: 440px;
+      height: 440px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Orbiting elements */
+    .orbit-ring {
+      position: absolute;
+      border: 1px dashed rgba(239, 131, 84, 0.25);
+      border-radius: 50%;
+    }
+    .ring-1 { width: 420px; height: 420px; }
+    .ring-2 { width: 320px; height: 320px; }
+
+    .core-chip {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, #1a1515, #0a0808);
+      border: 2px solid #EF8354;
+      border-radius: 24px;
+      box-shadow: 0 0 50px rgba(239, 131, 84, 0.25);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+    }
+
+    .chip-version {
+      font-size: 38px;
+      font-weight: 700;
+      color: #EF8354;
+      letter-spacing: -0.01em;
+    }
+
+    .chip-label {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(246, 241, 232, 0.5);
+      margin-top: 4px;
+    }
+
+    /* Scene 5: End Card */
+    .scene5-logo {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .scene5-title {
+      font-size: 96px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      background: linear-gradient(90deg, #EF8354, #ff9b6a);
+      color: #070709;
+      padding: 18px 44px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      box-shadow: 0 15px 40px rgba(239, 131, 84, 0.4);
     }
   </style>
 </head>
@@ -147,33 +377,172 @@
     id="stage"
     data-composition-id="Main"
     data-start="0"
-    data-duration="11.667"
+    data-duration="15"
     data-width="1920"
     data-height="1080"
     data-motionabl-fps="30"
-    data-motionabl-scenes='[{"label":"Preview","from":0,"durationInFrames":350}]'
+    data-motionabl-scenes='[
+      {"label":"Opener","from":0,"durationInFrames":90},
+      {"label":"ProductReveal","from":90,"durationInFrames":90},
+      {"label":"Metrics","from":180,"durationInFrames":90},
+      {"label":"CodeSpecs","from":270,"durationInFrames":90},
+      {"label":"EndCard","from":360,"durationInFrames":90}
+    ]'
   >
-    <div
-      id="preview-pending"
-      class="clip preview-pending-scene"
-      data-start="0"
-      data-duration="11.667"
-      data-track-index="0"
-    >
-      <div class="preview-pending-grid" aria-hidden="true"></div>
-      <div class="preview-pending-content">
-        <div class="preview-pending-status">
-          <span class="preview-pending-dot"></span>
-          <span>Preview</span>
+    <!-- Background Audio Tracks (Sfx / ambient sound layout) -->
+    <audio class="sfx-reveal" src="https://pub-e3bfc0083b0644b296a7080b21024c5f.r2.dev/sfx/1780342415125_iuo5qshiuji_sfx_cinematic_high_tech_whoosh_rev.mp3"></audio>
+    <audio class="sfx-click" src="https://pub-e3bfc0083b0644b296a7080b21024c5f.r2.dev/sfx/1780342418469_ycsneqa5tv_sfx_digital_interface_subtle_click.mp3"></audio>
+
+    <!-- Unified Atmospheric Background Layer -->
+    <div class="master-bg">
+      <img class="master-plate" src="https://v3b.fal.media/files/b/0a9c9642/nVJvXY07IYsYAXyS5_xhY_dfQz72sw.png" alt="" />
+      <div class="bg-vignette"></div>
+      <div class="bg-tech-grid"></div>
+      <div class="ambient-glow g-one"></div>
+      <div class="ambient-glow g-two" style="right: 10%; top: 20%; background: radial-gradient(circle, rgba(239, 131, 84, 0.08) 0%, transparent 70%);"></div>
+    </div>
+
+    <!-- Active Scenes -->
+    <div class="scenes-container">
+      
+      <!-- Scene 1: The Opener (0s - 3s) -->
+      <div 
+        id="scene-opener" 
+        class="clip" 
+        data-start="0" 
+        data-duration="3.0" 
+        data-track-index="0"
+      >
+        <div class="mask-revealer">
+          <div class="scene1-badge tech-font">A NEW PARADIGM</div>
         </div>
-        <div class="preview-pending-title">Preparing preview</div>
-        <div class="preview-pending-subtitle">
-          Generated scenes will appear here when ready.
-        </div>
-        <div class="preview-pending-progress" aria-hidden="true">
-          <span></span>
+        <h1 class="scene1-title">
+          <div class="mask-revealer">
+            <span class="word-1">The</span>
+            <span class="word-2">Ultimate</span>
+            <span class="word-3 highlight">Intelligence</span>
+            <span class="word-4">Engine</span>
+          </div>
+        </h1>
+      </div>
+
+      <!-- Scene 2: Product Reveal (3s - 6s) -->
+      <div 
+        id="scene-reveal" 
+        class="clip" 
+        data-start="3.0" 
+        data-duration="3.0" 
+        data-track-index="0"
+      >
+        <h1 class="scene2-title">
+          <div class="mask-revealer">
+            <span class="r-word-1">CLAUDE</span>
+            <span class="r-word-2 highlight">OPUS</span>
+            <span class="r-word-3 tech-font highlight" style="font-weight: 500;">4.8</span>
+          </div>
+        </h1>
+        <div class="mask-revealer">
+          <div class="scene2-sub tech-font">Re-engineered from the code up</div>
         </div>
       </div>
+
+      <!-- Scene 3: Metrics Grid (6s - 9s) -->
+      <div 
+        id="scene-metrics" 
+        class="clip" 
+        data-start="6.0" 
+        data-duration="3.0" 
+        data-track-index="0"
+      >
+        <h2 class="scene3-title">
+          <div class="mask-revealer">
+            <span class="m-title-1">Unrivaled</span>
+            <span class="m-title-2 highlight">Performance</span>
+            <span class="m-title-3">Architectures</span>
+          </div>
+        </h2>
+        
+        <div class="metrics-grid">
+          <div class="metric-card card-1">
+            <div class="metric-value tech-font">10x</div>
+            <div class="metric-label">Execution Speed</div>
+            <div class="metric-desc">Sub-millisecond latency for complex computations and analytical outputs.</div>
+          </div>
+          <div class="metric-card card-2">
+            <div class="metric-value tech-font">99.8%</div>
+            <div class="metric-label">Precision Rate</div>
+            <div class="metric-desc">Unprecedented accuracy in mathematical modeling and structured code generation.</div>
+          </div>
+          <div class="metric-card card-3">
+            <div class="metric-value tech-font">2.0M</div>
+            <div class="metric-label">Context Window</div>
+            <div class="metric-desc">Massive instant-recall token pipeline for processing deep repositories.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 4: Code block and processor visual (9s - 12s) -->
+      <div 
+        id="scene-specs" 
+        class="clip" 
+        data-start="9.0" 
+        data-duration="3.0" 
+        data-track-index="0"
+      >
+        <div class="spec-container">
+          <!-- Terminal block -->
+          <div class="code-terminal">
+            <div class="terminal-header">
+              <span class="dot-btn r"></span>
+              <span class="dot-btn y"></span>
+              <span class="dot-btn g"></span>
+              <span class="terminal-title">claude_agent.py</span>
+            </div>
+            <div class="terminal-body">
+              <p><span class="code-keyword">import</span> claude_opus <span class="code-keyword">as</span> opus</p>
+              <br>
+              <p><span class="code-keyword">def</span> <span class="code-func">initialize_system</span>():</p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;model = opus.<span class="code-class">OpusModel</span>(version=<span class="code-string">"4.8"</span>)</p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;model.<span class="code-func">enable_cognitive_flows</span>(precision=<span class="code-string">"high"</span>)</p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> model.<span class="code-func">solve_complex_multitask</span>()</p>
+              <br>
+              <p><span class="code-keyword">if</span> __name__ == <span class="code-string">"__main__"</span>:</p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-func">print</span>(<span class="code-string">"Opis 4.8 Status: Operational"</span>)</p>
+            </div>
+          </div>
+
+          <!-- Rotating Tech core visual -->
+          <div class="processor-module">
+            <div class="orbit-ring ring-1"></div>
+            <div class="orbit-ring ring-2"></div>
+            <div class="core-chip">
+              <img src="https://api.iconify.design/solar/cpu-bold-duotone.svg?color=%23EF8354&width=64" style="margin-bottom: 12px;" alt="" />
+              <div class="chip-version tech-font">4.8</div>
+              <div class="chip-label tech-font">OPUS CORE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 5: End Card (12s - 15s) -->
+      <div 
+        id="scene-endcard" 
+        class="clip" 
+        data-start="12.0" 
+        data-duration="3.0" 
+        data-track-index="0"
+      >
+        <div class="scene5-logo tech-font highlight">CLAUDE AI</div>
+        <h2 class="scene5-title">
+          <div class="mask-revealer">The Future is</div>
+          <br>
+          <div class="mask-revealer highlight">Fully Operational</div>
+        </h2>
+        <a href="#" class="cta-button tech-font">
+          Experience Opus 4.8
+        </a>
+      </div>
+
     </div>
   </div>
 
@@ -181,43 +550,215 @@
   <script>
     window.__timelines = window.__timelines || {};
 
-    const timeline = gsap.timeline({ paused: true });
-    timeline.from(".preview-pending-content", {
-      opacity: 0,
-      y: 34,
-      scale: 0.98,
-      duration: 0.8,
-      ease: "power4.out",
+    const tl = gsap.timeline({ paused: true });
+
+    // Set defaults
+    gsap.defaults({ ease: "power3.out", duration: 1.0 });
+
+    // --- Atmospheric Background Animation ---
+    tl.to(".master-plate", {
+      scale: 1.15,
+      rotation: 2,
+      duration: 15,
+      ease: "none"
     }, 0);
-    timeline.from(".preview-pending-grid", {
-      opacity: 0,
-      scale: 1.08,
-      duration: 1.1,
-      ease: "power3.out",
-    }, 0);
-    timeline.to(".preview-pending-dot", {
-      opacity: 0.35,
-      duration: 0.9,
-      yoyo: true,
-      repeat: 10,
-      ease: "sine.inOut",
-    }, 0.25);
-    timeline.fromTo(".preview-pending-progress span", {
-      scaleX: 0.08,
-    }, {
-      scaleX: 0.82,
-      duration: 5.8,
+
+    tl.to(".g-one", {
+      x: 300,
+      y: -150,
+      scale: 1.2,
+      duration: 15,
       yoyo: true,
       repeat: 1,
-      ease: "power2.inOut",
-    }, 0.4);
-    timeline.to(".preview-pending-grid", {
-      opacity: 0.28,
-      duration: 0.001,
-      ease: "power1.out",
-    }, 11.667);
+      ease: "sine.inOut"
+    }, 0);
 
-    window.__timelines.Main = timeline;
+    tl.to(".g-two", {
+      x: -200,
+      y: 100,
+      scale: 1.15,
+      duration: 15,
+      yoyo: true,
+      repeat: 1,
+      ease: "sine.inOut"
+    }, 0);
+
+    // ==========================================
+    // SCENE 1: OPENER (0.0s - 3.0s)
+    // ==========================================
+    tl.set("#scene-opener", { visibility: "visible", opacity: 1 }, 0);
+    
+    // SFX Trigger
+    tl.add(() => {
+      document.querySelector(".sfx-reveal").currentTime = 0;
+      document.querySelector(".sfx-reveal").play().catch(()=>{});
+    }, 0.1);
+
+    tl.from(".scene1-badge", {
+      y: 40,
+      opacity: 0,
+      duration: 1.2,
+      ease: "elastic.out(1, 0.75)"
+    }, 0.2);
+
+    tl.from(".scene1-title .word-1", { y: 100, opacity: 0, duration: 0.8 }, 0.4);
+    tl.from(".scene1-title .word-2", { y: 100, opacity: 0, duration: 0.8 }, 0.5);
+    tl.from(".scene1-title .word-3", { y: 100, opacity: 0, duration: 0.8, scale: 0.9 }, 0.6);
+    tl.from(".scene1-title .word-4", { y: 100, opacity: 0, duration: 0.8 }, 0.7);
+
+    // Exit transition (slide up with blur/opacity)
+    tl.to("#scene-opener", {
+      y: -100,
+      opacity: 0,
+      filter: "blur(10px)",
+      duration: 0.6,
+      ease: "power3.in"
+    }, 2.5);
+    tl.set("#scene-opener", { visibility: "hidden" }, 3.1);
+
+    // ==========================================
+    // SCENE 2: PRODUCT REVEAL (3.0s - 6.0s)
+    // ==========================================
+    tl.set("#scene-reveal", { visibility: "visible" }, 3.0);
+    tl.to("#scene-reveal", { opacity: 1, duration: 0.1 }, 3.0);
+
+    // SFX Trigger
+    tl.add(() => {
+      document.querySelector(".sfx-reveal").currentTime = 0;
+      document.querySelector(".sfx-reveal").play().catch(()=>{});
+    }, 3.1);
+
+    tl.from(".r-word-1", { y: 140, rotate: -3, scale: 0.85, opacity: 0, duration: 1.0, ease: "back.out(1.5)" }, 3.2);
+    tl.from(".r-word-2", { y: 140, rotate: 3, scale: 0.85, opacity: 0, duration: 1.0, ease: "back.out(1.5)" }, 3.35);
+    tl.from(".r-word-3", { y: 140, scale: 0.7, opacity: 0, duration: 1.2, ease: "elastic.out(1, 0.7)" }, 3.5);
+
+    tl.from(".scene2-sub", {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power2.out"
+    }, 3.8);
+
+    // Exit transition
+    tl.to("#scene-reveal", {
+      scale: 1.15,
+      opacity: 0,
+      filter: "blur(15px)",
+      duration: 0.7,
+      ease: "power2.inOut"
+    }, 5.4);
+    tl.set("#scene-reveal", { visibility: "hidden" }, 6.1);
+
+    // ==========================================
+    // SCENE 3: METRICS GRID (6.0s - 9.0s)
+    // ==========================================
+    tl.set("#scene-metrics", { visibility: "visible" }, 6.0);
+    tl.to("#scene-metrics", { opacity: 1, duration: 0.1 }, 6.0);
+
+    // Subtle audio feedback on list reveal
+    tl.add(() => {
+      document.querySelector(".sfx-click").currentTime = 0;
+      document.querySelector(".sfx-click").play().catch(()=>{});
+    }, 6.3);
+
+    tl.from(".m-title-1", { y: 60, opacity: 0, duration: 0.8 }, 6.1);
+    tl.from(".m-title-2", { y: 60, opacity: 0, duration: 0.8 }, 6.2);
+    tl.from(".m-title-3", { y: 60, opacity: 0, duration: 0.8 }, 6.3);
+
+    tl.from(".card-1", { y: 120, opacity: 0, rotateX: 15, duration: 1.0, ease: "back.out(1.2)" }, 6.4);
+    tl.from(".card-2", { y: 120, opacity: 0, rotateX: 15, duration: 1.0, ease: "back.out(1.2)" }, 6.55);
+    tl.from(".card-3", { y: 120, opacity: 0, rotateX: 15, duration: 1.0, ease: "back.out(1.2)" }, 6.7);
+
+    // Exit transition
+    tl.to("#scene-metrics", {
+      x: -150,
+      opacity: 0,
+      duration: 0.6,
+      ease: "power3.in"
+    }, 8.4);
+    tl.set("#scene-metrics", { visibility: "hidden" }, 9.1);
+
+    // ==========================================
+    // SCENE 4: CODE & PROCESSOR (9.0s - 12.0s)
+    // ==========================================
+    tl.set("#scene-specs", { visibility: "visible" }, 9.0);
+    tl.to("#scene-specs", { opacity: 1, duration: 0.1 }, 9.0);
+
+    // Terminal slide in
+    tl.from(".code-terminal", {
+      x: -180,
+      opacity: 0,
+      scale: 0.95,
+      duration: 1.1,
+      ease: "power4.out"
+    }, 9.2);
+
+    // Animated orbit and chip reveal
+    tl.from(".core-chip", {
+      scale: 0,
+      rotate: -180,
+      opacity: 0,
+      duration: 1.3,
+      ease: "elastic.out(0.8, 0.6)"
+    }, 9.4);
+
+    tl.from(".orbit-ring", {
+      scale: 1.3,
+      opacity: 0,
+      duration: 1.5,
+      stagger: 0.25,
+      ease: "power2.out"
+    }, 9.1);
+
+    // Constant rotation of rings inside this scene span
+    tl.to(".ring-1", { rotation: 360, duration: 3, ease: "none", repeat: -1 }, 9.0);
+    tl.to(".ring-2", { rotation: -360, duration: 4, ease: "none", repeat: -1 }, 9.0);
+
+    // Exit transition
+    tl.to("#scene-specs", {
+      scale: 0.85,
+      opacity: 0,
+      filter: "blur(10px)",
+      duration: 0.6,
+      ease: "power3.in"
+    }, 11.4);
+    tl.set("#scene-specs", { visibility: "hidden" }, 12.1);
+
+    // ==========================================
+    // SCENE 5: END CARD (12.0s - 15.0s)
+    // ==========================================
+    tl.set("#scene-endcard", { visibility: "visible" }, 12.0);
+    tl.to("#scene-endcard", { opacity: 1, duration: 0.1 }, 12.0);
+
+    tl.add(() => {
+      document.querySelector(".sfx-reveal").currentTime = 0;
+      document.querySelector(".sfx-reveal").play().catch(()=>{});
+    }, 12.1);
+
+    tl.from(".scene5-logo", {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      ease: "back.out(1.7)"
+    }, 12.2);
+
+    tl.from(".scene5-title .mask-revealer", {
+      y: 80,
+      opacity: 0,
+      duration: 1.0,
+      stagger: 0.2,
+      ease: "power4.out"
+    }, 12.4);
+
+    tl.from(".cta-button", {
+      scale: 0.85,
+      y: 40,
+      opacity: 0,
+      duration: 1.2,
+      ease: "elastic.out(1, 0.75)"
+    }, 12.8);
+
+    window.__timelines.Main = tl;
   </script>
 </body>
 </html>
